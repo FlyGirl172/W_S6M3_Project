@@ -2,49 +2,36 @@ import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 import Card from './Card'
 
-const api_key = 'DEMO_KEY'
-const URL = `https://api.nasa.gov/planetary/apod?api_key=${api_key}`
+const URL = 'http://localhost:9009/api/apod?api_key=DEMO_KEY'
 
-
-
-function App() {
-  const [apod, setApod] = useState()
+export default function App() {
+  const [data, setData] = useState()
 
   useEffect(() => {
-    function getPhoto() {
+    function fetchAPOD() {
       axios.get(URL)
-        .then(res => {
-          console.log(res.data);
-          setApod(res.data)
-        })
-        .catch(err => {
-          console.log(err.message);
-        })
-
-    }
-    //getPhoto()
-   setApod({
-        "date": "2023-06-29",
-        "explanation": "Monitoring 68 pulsars with very large radio telescopes, the North American..."
-        "hdurl": "https://apod.nasa.gov/apod/image/2306/Gwb_Nanograv_3000_annotated.jpg",
-        "media_type": "image",
-        "service_version": "v1",
-        "title": "A Message from the Gravitational Universe",
-        "url": "https://apod.nasa.gov/apod/image/2306/Gwb_Nanograv_960_annotated.jpg"
+      .then(res => {
+        setData(res.data)
       })
+      .catch(err => {
+        console.log(err.message)
+      })
+    }
+    fetchAPOD()
   }, [])
-  if (!apod) return 'Grabbing Photo of the Day...'
+
+  if (!data) return <p>Fetching data...</p>
   return (
     <section>
-     <Card
-       title={apod.title}
-       text={apod.explanation}
-       imageURL={apod.url}
-       date={apod.date}
-     />
-    </section>
-  )
+        <Card
+          title={data.title}
+          text={data.explanation}
+          image={data.url}
+          author={data.copyright}
+          date={data.date}
+        />  
+      </section>
+    )
 }
 
-export default App
-
+  
